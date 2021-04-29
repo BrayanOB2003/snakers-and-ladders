@@ -1,6 +1,12 @@
 package model;
 
 public class Box {
+	
+	private Box next;
+	private Box prev;
+	private Box up;
+	private Box down;
+	
 	private int boxNumber;
 	private int row;
 	private int col;
@@ -45,8 +51,44 @@ public class Box {
 	public String getPlayers() {
 		return players;
 	}
+	
+	public Box getNext() {
+		return next;
+	}
+
+	public void setNext(Box next) {
+		this.next = next;
+	}
+
+	public Box getPrev() {
+		return prev;
+	}
+
+	public void setPrev(Box prev) {
+		this.prev = prev;
+	}
+
+	public Box getUp() {
+		return up;
+	}
+
+	public void setUp(Box up) {
+		this.up = up;
+	}
+
+	public Box getDown() {
+		return down;
+	}
+
+	public void setDown(Box down) {
+		this.down = down;
+	}
 
 	public void setPlayers(String players) {
 		this.players = players;
+	}
+	
+	public String toString() {
+		return "(" + row + "," + col +")";
 	}
 }

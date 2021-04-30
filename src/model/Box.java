@@ -24,6 +24,10 @@ public class Box {
 		return boxNumber;
 	}
 	
+	public void setBoxNumber(int boxNumber) {
+		this.boxNumber = boxNumber;
+	}
+	
 	public int getRow() {
 		return row;
 	}
@@ -89,6 +93,7 @@ public class Box {
 	}
 	
 	public String toString() {
-		return "(" + row + "," + col +")";
+		//return "(" + row + "," + col +")";
+		return "(" + boxNumber + ")";
 	}
 }

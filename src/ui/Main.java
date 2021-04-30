@@ -6,7 +6,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		Board a = new Board(3,4);
+		Board a = new Board(3,3);
 		System.out.println(a);
 	}
 }

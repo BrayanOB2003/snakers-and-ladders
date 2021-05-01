@@ -6,16 +6,146 @@ public class Board {
 	private Box first;
 	private int numRows;
 	private int numColumns;
+	private int numSnakes;
+	private int numLadders;
 	
-	public Board(int n, int m) {
+	public Board(int n, int m, int numSnakes, int numLadders) {
 		numRows = n;
 		numColumns = m;
+		this.numSnakes = numSnakes;
+		this.numLadders = numLadders;
 		makeBoard();
+		char a = 65;
+		makeSnakes(a, numSnakes);
+	}
+	
+	//---------------------------------------Make Snakes---------------------------------------
+	
+	private void makeSnakes(char a, int numSnakes) {
+		
+		if(numSnakes > 0) {
+			int random = (int) (Math.random()*numColumns);
+			makeHeadSnakeRight(first, random, a);
+			makeSnakes((char) (a+1), numSnakes-1);
+		}
+		
 	}
 	
 	
+	
+	private void makeHeadSnakeRight(Box current, int n, char a) {
+		
+		if(n > 0) {
+			
+			if(current.getNext() != null) {
+				makeHeadSnakeRight(current.getNext(), n-1, a);
+			}else {
+				makeSnakeHeadLeft(current, n, a);
+			}
+			
+		}else {
+			int random = (int) (Math.random()*(numRows-1));
+			goToDownRandom(current, random, a);
+			
+		}
+	}
+	
+	
+	
+	private void makeSnakeHeadLeft(Box current, int n, char a) {
+		
+		if(n > 0) {
+			if(current.getPrev() != null) {
+				makeSnakeHeadLeft(current.getPrev(), n-1, a);
+			}else {
+				makeHeadSnakeRight(current, n-1, a);
+			}
+			
+		}else {
+			int random = (int) (Math.random()*numRows);
+			goToDownRandom(current, random, a);
+			
+		}
+	}
+
+	private void goToDownRandom(Box current, int n, char a) {
+		
+		
+		
+		if(n > 0 ) {
+			
+			if(current.getDown() != null) {
+				goToDownRandom(current.getDown(), n-1, a);
+			}else {
+				
+			}
+		}else {
+			current.setSnake(a);
+			int random = (int) (Math.random()*numColumns);
+			makeTailSnakeRigth(current, random, a );
+		}
+	}
+	
+	private void makeTailSnakeRigth(Box current, int n, char a) {
+		if(n > 0) {
+			if(current.getNext() != null) {
+				makeTailSnakeRigth(current.getNext(), n-1, a);
+			}else {
+				makeTailSnakeLeft(current, n-1, a);
+			}
+			
+		}else {
+			
+			int random = (int) (Math.random()*(numRows - current.getRow()));
+			if(random == 0) {
+				random = 1;
+				makeTailSnakeDown(current, random, a);
+			}else {
+				makeTailSnakeDown(current, random, a);
+			}
+			
+			
+		}
+	}
+
+	private void makeTailSnakeLeft(Box current, int n, char a) {
+		if(current.getPrev() != null) {
+			if(n > 0) {
+				makeTailSnakeLeft(current.getPrev(), n-1, a);
+			}else {
+				
+				int random = (int) (Math.random()*(numRows - current.getRow()));
+				if(random == 0) {
+					random = 1;
+					makeTailSnakeDown(current, random, a);
+				}else {
+					makeTailSnakeDown(current, random, a);
+				}
+			}
+		}else {
+			makeTailSnakeRigth(current, n-1, a);
+		}
+		
+	}
+
+	private void makeTailSnakeDown(Box current, int n, char a) {
+		if(n > 0) {
+			
+			if(current.getDown() != null) {
+				makeTailSnakeDown(current.getDown(), n-1, a);
+			}else {
+				current.setSnake(a);
+			}
+		}else {
+			current.setSnake(a);
+		}
+		
+	}
+
+	
+	//----------------------------------------Hacer Matriz-----------------------------------------------
 	public void makeBoard() {
-		first = new Box(0,0,0);
+		first = new Box(0,0);
 		createRow(0,0, first);
 		searchInitialPosition(numRows, first, 1);
 	}
@@ -26,7 +156,7 @@ public class Board {
 
 		createCol(i,j+1, currentFirstRow, currentFirstRow.getUp());
 		if(i+1 < numRows) {
-			Box downFirstRow = new Box(i+1,j,0);
+			Box downFirstRow = new Box(i+1,j);
 			downFirstRow.setUp(currentFirstRow);
 			currentFirstRow.setDown(downFirstRow);
 			createRow(i+1, j, downFirstRow);
@@ -37,7 +167,7 @@ public class Board {
 	private void createCol(int i, int j, Box prev, Box rowPrev) {
 		
 		if(j < numColumns) {
-			Box current = new Box(i,j,0);
+			Box current = new Box(i,j);
 			current.setPrev(prev);
 			prev.setNext(current);
 			
@@ -79,7 +209,7 @@ public class Board {
 		return msg;
 	}
 
-	//---------------------------------------Buscar----------------------------------------------
+	//---------------------------------------Enumerar Matriz----------------------------------------------
 	private void searchInitialPosition(int n, Box current, int i) {
 		if(current.getDown().getRow() == n-1) {
 			current.getDown().setBoxNumber(i);
@@ -128,16 +258,18 @@ public class Board {
 			enumToLeftWithouUp(current.getPrev(), i+1);
 		}
 	}
-
-
-	//-------------------------------------Getters and setters ----------------------------------------------
 	
+
 	private void enumToRigthWitouUp(Box current, int i) {
 		if(current.getNext() != null) {
 			current.getNext().setBoxNumber(i+1);
 			enumToRigthWitouUp(current.getNext(), i+1);
 		}
 	}
+	
+	//-------------------------------------Getters and setters ----------------------------------------------
+	
+	
 
 
 	public int getNumColumns() {

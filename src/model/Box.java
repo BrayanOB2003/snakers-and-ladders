@@ -14,10 +14,9 @@ public class Box {
 	private int ladder;
 	private String players;
 	
-	public Box(int r, int c, int b) {
+	public Box(int r, int c) {
 		row = r;
 		col = c;
-		boxNumber = b;
 	}
 	
 	public int getBoxNumber() {
@@ -94,6 +93,6 @@ public class Box {
 	
 	public String toString() {
 		//return "(" + row + "," + col +")";
-		return "(" + boxNumber + ")";
+		return "( " + snake + " )  ";
 	}
 }

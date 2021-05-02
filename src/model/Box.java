@@ -93,6 +93,6 @@ public class Box {
 	
 	public String toString() {
 		//return "(" + row + "," + col +")";
-		return "( " + snake + " )  ";
+		return "( " + snake + ladder + " )  ";
 	}
 }

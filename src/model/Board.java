@@ -17,6 +17,8 @@ public class Board {
 		makeBoard();
 		char a = 65;
 		makeSnakes(a, numSnakes);
+		int i = 1;
+		makeLadders(numLadders, i);
 	}
 	
 	//---------------------------------------Make Snakes---------------------------------------
@@ -70,8 +72,6 @@ public class Board {
 
 	private void goToDownRandom(Box current, int n, char a) {
 		
-		
-		
 		if(n > 0 ) {
 			
 			if(current.getDown() != null) {
@@ -80,9 +80,16 @@ public class Board {
 				
 			}
 		}else {
-			current.setSnake(a);
-			int random = (int) (Math.random()*numColumns);
-			makeTailSnakeRigth(current, random, a );
+			
+			if(current.getSnake() > 0 || current.getLadder() > 0) {
+				makeHeadSnakeRight(first, (int) (Math.random()*numColumns), a);
+			}else {
+				
+				current.setSnake(a);
+				int random = (int) (Math.random()*numColumns);
+				makeTailSnakeRigth(current, random, a );
+			}
+			
 		}
 	}
 	
@@ -134,15 +141,217 @@ public class Board {
 			if(current.getDown() != null) {
 				makeTailSnakeDown(current.getDown(), n-1, a);
 			}else {
+				
+				if(current.getSnake() > 0) {
+					ifBoxSnakeIsRepeatRigth(current, a);
+				}else {
+					current.setSnake(a);
+				}
+			}
+			
+		}else {
+			
+			if(current.getSnake() > 0) {
+				ifBoxSnakeIsRepeatRigth(current, a);
+			}else {
 				current.setSnake(a);
 			}
+		}
+		
+	}
+	
+	private void ifBoxSnakeIsRepeatRigth(Box current, char a) {
+		
+		if(current.getNext() != null) {
+			if(current.getNext().getSnake() < 65) {
+				current.getNext().setSnake(a);
+			}else {
+				ifBoxSnakeIsRepeatRigth(current.getNext(), a);
+			}
 		}else {
-			current.setSnake(a);
+			ifBoxSnakeIsRepeatLeft(current, a);
 		}
 		
 	}
 
 	
+	private void ifBoxSnakeIsRepeatLeft(Box current, char a) {
+		
+		if(current.getPrev() != null) {
+			if(current.getPrev().getSnake() < 65) {
+				current.getPrev().setSnake(a);
+			}else {
+				ifBoxSnakeIsRepeatLeft(current.getPrev(), a);
+			}
+		}else {
+			System.out.println("Demasiadas serpientes :(");
+		}
+	}
+	
+	
+	//-------------------------------------------Make Ladders--------------------------------------------
+
+	
+	private void makeLadders(int numLadders, int character) {
+		
+		if(numLadders > 0) {
+			
+			int random = (int) (Math.random()*numColumns);
+			makeHeadLaddersRigth(first, random, character);
+			makeLadders(numLadders - 1, character + 1);
+		}
+
+		
+	}
+	
+	
+	private void makeHeadLaddersRigth(Box current, int n, int character) {
+		
+		if(n > 0) {
+			if(current.getNext() != null) {
+				makeHeadLaddersRigth(current.getNext(), n-1, character);
+			}else {
+				makeHeadLaddersLeft(current, n, character);
+			}
+		}else {
+			int random = (int) (Math.random()*(numRows-1));
+			goToDownLaddersRandom(current, random, character);
+		}
+	}
+
+	private void goToDownLaddersRandom(Box current, int n, int character) {
+		if(n > 0 ) {
+			
+			if(current.getDown() != null) {
+				goToDownLaddersRandom(current.getDown(), n-1, character);
+			}else {
+				
+			}
+		}else {
+			
+			if(current.getSnake() > 0 && current.getLadder() > 0) {
+				makeHeadLaddersRigth(first, (int) (Math.random()*numColumns), character);
+			}else {
+				
+				current.setLadder(character);
+				int random = (int) (Math.random()*numColumns);
+				makeTailLadderRigth(current, random, character);
+			}
+			
+		}
+		
+	}
+
+	private void makeTailLadderRigth(Box current, int n, int character) {
+		if(n > 0) {
+			if(current.getNext() != null) {
+				makeTailLadderRigth(current.getNext(), n-1, character);
+			}else {
+				makeTailLadderLeft(current, n-1, character);
+			}
+			
+		}else {
+			
+			int random = (int) (Math.random()*(numRows - current.getRow()));
+			if(random == 0) {
+				random = 1;
+				makeTailLadderDown(current, random, character);
+			}else {
+				makeTailLadderDown(current, random, character);
+			}
+			
+			
+		}
+		
+	}
+
+	private void makeTailLadderLeft(Box current, int n, int character) {
+		if(current.getPrev() != null) {
+			if(n > 0) {
+				makeTailLadderLeft(current.getPrev(), n-1, character);
+			}else {
+				
+				int random = (int) (Math.random()*(numRows - current.getRow()));
+				if(random == 0) {
+					random = 1;
+					makeTailLadderDown(current, random, character);
+				}else {
+					makeTailLadderDown(current, random, character);
+				}
+			}
+		}else {
+			makeTailLadderRigth(current, n-1, character);
+		}
+		
+	}
+
+	private void makeTailLadderDown(Box current, int n, int character) {
+		if(n > 0) {
+			
+			if(current.getDown() != null) {
+				makeTailLadderDown(current.getDown(), n-1, character);
+			}else {
+				
+				if(current.getSnake() > 0 || current.getLadder() > 0) {
+					ifBoxLadderIsRepeatRigth(current, character);
+				}else {
+					current.setLadder(character);
+				}
+			}
+			
+		}else {
+			
+			if(current.getSnake() > 0 || current.getLadder() > 0) {
+				ifBoxLadderIsRepeatRigth(current, character);
+			}else {
+				current.setLadder(character);
+			}
+		}
+		
+	}
+
+	private void makeHeadLaddersLeft(Box current, int n, int character) {
+		
+		if(n > 0) {
+			if(current.getPrev() != null) {
+				makeHeadLaddersLeft(current.getPrev(), n-1, character);
+			}else {
+				makeHeadLaddersRigth(current, n-1, character);
+			}
+			
+		}else {
+			int random = (int) (Math.random()*numRows);
+			goToDownLaddersRandom(current, random, character);
+			
+		}
+	}
+
+	private void ifBoxLadderIsRepeatRigth(Box current, int character) {
+		
+		if(current.getNext() != null) {
+			if(current.getNext().getSnake() < 65 && current.getNext().getLadder() == 0) {
+				current.getNext().setLadder(character);
+			}else {
+				ifBoxLadderIsRepeatRigth(current.getNext(), character);
+			}
+		}else {
+			ifBoxLadderIsRepeatLeft(current, character);
+		}
+	}
+
+	private void ifBoxLadderIsRepeatLeft(Box current, int character) {
+		if(current.getPrev() != null) {
+			if(current.getPrev().getSnake() < 65 && current.getPrev().getLadder() == 0) {
+				current.getPrev().setLadder(character);
+			}else {
+				ifBoxLadderIsRepeatLeft(current.getPrev(), character);
+			}
+		}else {
+			System.out.println("Demasiadas escaleras :(");
+		}
+		
+	}
+
 	//----------------------------------------Hacer Matriz-----------------------------------------------
 	public void makeBoard() {
 		first = new Box(0,0);
@@ -289,5 +498,13 @@ public class Board {
 
 	public void setFirst(Box first) {
 		this.first = first;
+	}
+
+	public int getNumSnakes() {
+		return numSnakes;
+	}
+
+	public int getNumLadders() {
+		return numLadders;
 	}
 }

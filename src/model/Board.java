@@ -2,7 +2,7 @@ package model;
 
 public class Board {
 
-	
+	//Codigo virgen
 	private Box first;
 	private int numRows;
 	private int numColumns;

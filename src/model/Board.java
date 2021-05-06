@@ -229,7 +229,7 @@ public class Board {
 			}
 		}else {
 			
-			if(current.getSnake() > 0 && current.getLadder() > 0) {
+			if(current.getSnake() > 0 || current.getLadder() > 0) {
 				makeHeadLaddersRigth(first, (int) (Math.random()*numColumns), character);
 			}else {
 				

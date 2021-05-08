@@ -4,12 +4,13 @@ public class Board {
 
 	
 	private Box first;
+	
 	private int numRows;
 	private int numColumns;
 	private int numSnakes;
 	private int numLadders;
 	
-	public Board(int n, int m, int numSnakes, int numLadders) {
+	public Board(int n, int m, int numSnakes, int numLadders, char[] players) {
 		numRows = n;
 		numColumns = m;
 		this.numSnakes = numSnakes;
@@ -19,8 +20,120 @@ public class Board {
 		makeSnakes(a, numSnakes);
 		int i = 1;
 		makeLadders(numLadders, i);
+		putPlayers(players);
 	}
 	
+	//Put the players in initial position
+	
+	
+	private void putPlayers(char[] players) {
+		putPlayers(0, players);
+	}
+	
+	private void putPlayers(int i, char[] players) {
+		if(i <  players.length) {
+			putPlayers(numRows, first, players[i]);
+			i++;
+			putPlayers(i, players);
+		}
+	}
+	
+	private void putPlayers(int n, Box current, char p) {
+		if(current.getDown().getRow() == n-1) {
+			current.getDown().addPlayer(p);
+		}else {
+			putPlayers(n, current.getDown(), p);
+		}
+	}
+	
+	//Player movement
+	
+	public void playerMove(int move, char p) {
+		playerMove(numRows, first, p, move);
+	}
+	
+	private void playerMove(int n, Box current, char p, int move) {
+		if(current.getDown().getRow() == n-1) {
+			moveToRigth(current.getDown(), p, move);
+		}else {
+			playerMove(n, current.getDown(), p, move);
+		}
+	}
+
+	private void moveToRigth(Box current, char p, int move) {
+		int i = move;
+		
+		if (current != null) {
+			
+			if (current.getUp() != null) {
+				
+				if (current.contain(p)) {
+					
+					current.removePlayer(p);
+					System.out.println("1");
+					if ((current.getCol() + move) < numColumns) {
+						
+						if (i == 0) {
+							current.addPlayer(p);
+						} else {
+							i--;
+							moveToRigth(current.getNext(), p, i);
+						}
+						
+					} else {
+						moveToLeft(current.getUp(), p, i - (numColumns - 1));
+					}
+					
+				} else {
+					moveToRigth(current.getNext(), p, move);
+				}
+
+			} else {
+				//moveToRigthWitouUp(current, i);
+			} 
+			
+		}else {
+			//moveToLeft(current.getUp(), p, move);
+		}
+	}
+	
+	private void moveToLeft(Box current, char p, int move) {
+		int i = move;
+		if(current.getUp() != null) {
+			if(current.getPrev() != null) {			
+				if(i == 0) {
+					current.addPlayer(p);
+				} else {
+					current.removePlayer(p);
+					i--;
+					moveToLeft(current.getPrev(), p, i);
+				}
+			}else {
+				//current.getUp().setBoxNumber(i+1);
+				//enumToRigth(current.getUp(), i+1);
+			}
+			
+		}else {
+			//enumToLeftWithouUp(current, i);
+		}
+	}
+
+	/*
+	private void moveToLeftWithouUp(Box current, int i) {
+		if(current.getPrev() != null) {
+			current.getPrev().setBoxNumber(i+1);
+			enumToLeftWithouUp(current.getPrev(), i+1);
+		}
+	}
+	
+
+	private void moveToRigthWitouUp(Box current, int i) {
+		if(current.getNext() != null) {
+			current.getNext().setBoxNumber(i+1);
+			enumToRigthWitouUp(current.getNext(), i+1);
+		}
+	}
+	*/
 	//---------------------------------------Make Snakes---------------------------------------
 	
 	private void makeSnakes(char a, int numSnakes) {
@@ -187,8 +300,7 @@ public class Board {
 			System.out.println("Demasiadas serpientes :(");
 		}
 	}
-	
-	
+			
 	//-------------------------------------------Make Ladders--------------------------------------------
 
 	

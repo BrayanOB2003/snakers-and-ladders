@@ -53,8 +53,8 @@ public class Box {
 		this.ladder = ladder;
 	}
 
-	public String getPlayers() {
-		return players;
+	public Player getPlayers() {
+		return first;
 	}
 	
 	public Box getNext() {
@@ -87,10 +87,6 @@ public class Box {
 
 	public void setDown(Box down) {
 		this.down = down;
-	}
-
-	public void setPlayers(String players) {
-		this.players = players;
 	}
 	
 	//Circular linked list of player
@@ -149,11 +145,14 @@ public class Box {
 	private boolean contain(Player current ,char p) {
 		
 		if (current.getCharacter() == p) {
-			System.out.println("1");
 			return true;
+		} else if(current.getNext() != first) {
+			if(contain(current.getNext(), p)) {
+				return true;
+			} else {
+				return false;
+			}
 		} else {
-			contain(current.getNext(), p);
-			System.out.println("2");
 			return false;
 		}
 	}

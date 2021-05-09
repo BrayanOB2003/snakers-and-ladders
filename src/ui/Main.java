@@ -24,7 +24,7 @@ public class Main {
 		System.out.println(box.printPlayers());
 		box.removePlayer('#');
 		System.out.println(box.printPlayers());
-		System.out.println(box.contain('&'));
+		System.out.println(box.contain('%'));
 		
 		//char e = 0;
 		//System.out.println(e);

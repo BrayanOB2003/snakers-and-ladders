@@ -56,14 +56,13 @@ public class Board {
 	
 	private void playerMove(int n, Box current, char p, int move) {
 		if(current.getDown().getRow() == n-1) {
-			moveToRigth(current.getDown(), p, move);
+			moveToRigth(current.getDown(), current.getDown(), p, move);
 		}else {
 			playerMove(n, current.getDown(), p, move);
 		}
 	}
 
-	private void moveToRigth(Box current, char p, int move) {
-		int i = move;
+	private void moveToRigth(Box current, Box last, char p, int move) {
 		
 		if (current != null) {
 			
@@ -72,54 +71,112 @@ public class Board {
 				if (current.contain(p)) {
 					
 					current.removePlayer(p);
-					System.out.println("1");
-					if ((current.getCol() + move) < numColumns) {
-						
-						if (i == 0) {
-							current.addPlayer(p);
-						} else {
-							i--;
-							moveToRigth(current.getNext(), p, i);
-						}
-						
-					} else {
-						moveToLeft(current.getUp(), p, i - (numColumns - 1));
-					}
 					
+					if ((current.getCol() + move) < numColumns) {
+						moveRigth(current, p, move);
+					} else {
+						currentAllToRigth(current, p, move);
+					}
+						
 				} else {
-					moveToRigth(current.getNext(), p, move);
+					moveToRigth(current.getNext(), current, p, move);
 				}
-
+				
 			} else {
 				//moveToRigthWitouUp(current, i);
-			} 
-			
-		}else {
-			//moveToLeft(current.getUp(), p, move);
+			}
+		} else {
+			System.out.println("1");
+			moveToLeft(last.getUp(), last.getUp(), p, move);
 		}
 	}
 	
-	private void moveToLeft(Box current, char p, int move) {
+	private void moveRigth(Box current, char p, int move) {
+		
 		int i = move;
-		if(current.getUp() != null) {
-			if(current.getPrev() != null) {			
-				if(i == 0) {
-					current.addPlayer(p);
-				} else {
-					current.removePlayer(p);
-					i--;
-					moveToLeft(current.getPrev(), p, i);
-				}
-			}else {
-				//current.getUp().setBoxNumber(i+1);
-				//enumToRigth(current.getUp(), i+1);
-			}
 			
-		}else {
-			//enumToLeftWithouUp(current, i);
+			if (i == 0 && !current.contain(p)) {
+				current.addPlayer(p);
+			} else if(current.contain(p)) {
+				
+			} else {
+				i--;
+				moveRigth(current.getNext(), p, i);
+			}
+	}
+	
+	private void currentAllToRigth(Box current, char p, int move) {
+		
+		int i = move;
+		
+		if(current.getNext() == null) {
+			current.getUp().addPlayer(p);
+			i--;
+			moveToLeft(current.getUp(), current.getUp(), p, i);
+		} else {
+			i--;
+			currentAllToRigth(current.getNext(), p, i);
 		}
 	}
+	
+	private void moveToLeft(Box current, Box last, char p, int move) {
 
+		if (current != null) {
+			
+			if (current.getUp() != null) {
+				
+				if (current.contain(p)) {
+					
+					current.removePlayer(p);
+					int numCol = numColumns - (current.getCol() + 1);
+					if ((numCol + move) < numColumns) {
+						moveLeft(current, p, move);
+					} else {
+						System.out.println(move - numCol);
+						currentAllToLeft(current, p, move);
+					}
+				} else {
+					moveToLeft(current.getPrev(), current, p, move);
+				}
+
+			} else {
+				//moveToLeftWithouUp(current, i);
+			} 
+			
+		} else {
+			System.out.println("2");
+			moveToRigth(last.getUp(), current, p, move);
+		}
+	}
+	
+	private void moveLeft(Box current, char p, int move) {
+		
+		int i = move;
+
+		if(i == 0 && !current.contain(p)) {
+			current.addPlayer(p);
+		}else if(current.contain(p)) {
+			
+		} else {
+			i--;
+			moveLeft(current.getPrev(), p, i);
+		}
+	}
+	
+	private void currentAllToLeft(Box current, char p, int move) {
+		
+		int i = move;
+		
+		if(current.getPrev() == null) {
+			current.getUp().addPlayer(p);
+			i--;
+			moveToRigth(current.getUp(),current.getUp(), p, i);
+		} else {
+			i--;
+			currentAllToLeft(current.getPrev(), p, i);
+		}
+	}
+	
 	/*
 	private void moveToLeftWithouUp(Box current, int i) {
 		if(current.getPrev() != null) {
@@ -531,7 +588,33 @@ public class Board {
 		}
 		return msg;
 	}
+	
+	public String toStringGame() {
+		String msg;
+		msg = toStringRowGame(first);
+		return msg;
+	}
 
+
+	private String toStringRowGame(Box firstRow) {
+		String msg = "";
+		if(firstRow != null) {
+			msg = toStringColGame(firstRow) + "\n";
+			msg += toStringRow(firstRow.getDown());
+		}
+		return msg;
+	}
+
+
+	private String toStringColGame(Box current) {
+		String msg = "";
+		if(current != null) {
+			msg = current.toStringGame();
+			msg += toStringColGame(current.getNext());
+		}
+		return msg;
+	}
+	
 	//---------------------------------------Enumerar Matriz----------------------------------------------
 	private void searchInitialPosition(int n, Box current, int i) {
 		if(current.getDown().getRow() == n-1) {

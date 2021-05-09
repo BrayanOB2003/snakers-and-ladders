@@ -125,10 +125,12 @@ public class Box {
 	}
 	
 	private void removeFirst(Player current){
-		if(current.getNext() == first) {
+		if(first.getNext() == first) {
+			first = null;
+		} else if(current.getNext() == first){
 			first = current.getNext().getNext();
 			current.setNext(first);
-		} else {
+		}else {
 			removeFirst(current.getNext());
 		}
 	}
@@ -175,6 +177,12 @@ public class Box {
 	}
 	
 	public String toString() {
+		String l = (ladder != 0)?ladder+"":" ";
+		String s = (snake != 0)?snake+"":" ";
+		return "( " + s + l + printPlayers() + boxNumber +" )";
+	}
+	
+	public String toStringGame() {
 		String l = (ladder != 0)?ladder+"":" ";
 		String s = (snake != 0)?snake+"":" ";
 		return "( " + s + l + printPlayers() +" )";

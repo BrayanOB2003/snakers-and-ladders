@@ -3,7 +3,11 @@ package model;
 public class Game {
 
 	
-	Board root;
+	private Board root;
+	
+	public Game() {
+		
+	}
 	
 	public void addPlayerWinner(Board board, String nickname) {
 		addPlayerWinner(board.getPlayerWinner(), board.getPlayers(), nickname, board);
@@ -21,7 +25,6 @@ public class Game {
 	private void addPlayerWinner(int amountMovements, String nickname, char playerWinner, Board board) {
 		
 		int score = amountMovements * (board.getNumColumns() * board.getNumRows());
-		board.setScore(score);
 		Board newPlayerWinner = new Board(score, nickname, board.getPlayers(), playerWinner, board.getNumRows(),
 				board.getNumColumns(), board.getNumSnakes(), board.getNumLadders());
 		
@@ -60,7 +63,7 @@ public class Game {
 		inOrden(root);
 	}
 	
-	public void inOrden(Board root) {
+	private void inOrden(Board root) {
 		if(root != null) {
 			inOrden(root.getLeft());
 			System.out.println(root.getNicknameWinner() + "  " + root.getScore());

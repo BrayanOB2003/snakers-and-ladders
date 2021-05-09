@@ -4,6 +4,7 @@ public class Board {
 
 	
 	private Box first;
+	private Player players;
 	
 	private int numRows;
 	private int numColumns;
@@ -41,6 +42,7 @@ public class Board {
 	private void putPlayers(int n, Box current, char p) {
 		if(current.getDown().getRow() == n-1) {
 			current.getDown().addPlayer(p);
+			players = current.getDown().getPlayers();
 		}else {
 			putPlayers(n, current.getDown(), p);
 		}

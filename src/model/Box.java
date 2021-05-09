@@ -14,7 +14,6 @@ public class Box {
 	private int col;
 	private char snake;
 	private int ladder;
-	private String players;
 	
 	public Box(int r, int c) {
 		row = r;

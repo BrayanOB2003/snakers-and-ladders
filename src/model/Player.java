@@ -2,7 +2,7 @@ package model;
 
 public class Player {
 	private char character;
-	
+	private int amountMovements;
 	private Player next;
 	
 	public Player(char p) {
@@ -23,5 +23,13 @@ public class Player {
 
 	public void setNext(Player next) {
 		this.next = next;
+	}
+
+	public int getAmountMovements() {
+		return amountMovements;
+	}
+
+	public void setAmountMovements(int amountMovements) {
+		this.amountMovements = amountMovements;
 	}
 }

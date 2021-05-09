@@ -75,6 +75,7 @@ public class Board {
 						
 						if (i == 0) {
 							current.addPlayer(p);
+							
 						} else {
 							i--;
 							moveToRigth(current.getNext(), p, i);
@@ -97,6 +98,8 @@ public class Board {
 		}
 	}
 	
+	
+
 	private void moveToLeft(Box current, char p, int move) {
 		int i = move;
 		if(current.getUp() != null) {

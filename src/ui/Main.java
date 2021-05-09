@@ -1,6 +1,5 @@
 package ui;
 
-import model.Board;
 import model.Box;
 
 public class Main {

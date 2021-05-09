@@ -5,9 +5,11 @@ public class Player {
 	private int amountMovements;
 	private Player next;
 	
+	
 	public Player(char p) {
 		character = p;
 	}
+	
 
 	public char getCharacter() {
 		return character;
@@ -29,7 +31,8 @@ public class Player {
 		return amountMovements;
 	}
 
-	public void setAmountMovements(int amountMovements) {
-		this.amountMovements = amountMovements;
+	public void setAmountMovements() {
+		this.amountMovements ++;
 	}
+
 }

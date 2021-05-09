@@ -10,7 +10,16 @@ public class Board {
 	private int numColumns;
 	private int numSnakes;
 	private int numLadders;
+	private int score;
+	private char playerWinner;
+	private String nicknameWinner;
 	
+	private Board right;
+	private Board left;
+	private Board p;
+	
+	
+
 	public Board(int n, int m, int numSnakes, int numLadders, char[] players) {
 		numRows = n;
 		numColumns = m;
@@ -22,6 +31,10 @@ public class Board {
 		int i = 1;
 		makeLadders(numLadders, i);
 		putPlayers(players);
+	}
+	
+	public Board(int score, String nickname, Player players, char playerWinner, int n, int m, int s, int l) {
+		
 	}
 	
 	//Put the players in initial position
@@ -77,7 +90,7 @@ public class Board {
 						
 						if (i == 0) {
 							current.addPlayer(p);
-							
+							addAmountMovement(p);
 						} else {
 							i--;
 							moveToRigth(current.getNext(), p, i);
@@ -102,12 +115,25 @@ public class Board {
 	
 	
 
+	private void addAmountMovement(char p) {
+		addAmountMovement(p, players);
+	}
+	
+	private void addAmountMovement(char p, Player current) {
+		if(current.getCharacter() == p) {
+			current.setAmountMovements();
+		}else {
+			addAmountMovement(p, current.getNext());
+		}
+	}
+
 	private void moveToLeft(Box current, char p, int move) {
 		int i = move;
 		if(current.getUp() != null) {
 			if(current.getPrev() != null) {			
 				if(i == 0) {
 					current.addPlayer(p);
+					addAmountMovement(p);
 				} else {
 					current.removePlayer(p);
 					i--;
@@ -593,6 +619,7 @@ public class Board {
 		}
 	}
 	
+	
 	//-------------------------------------Getters and setters ----------------------------------------------
 	
 	
@@ -623,5 +650,61 @@ public class Board {
 
 	public int getNumLadders() {
 		return numLadders;
+	}
+	
+	public Board getRight() {
+		return right;
+	}
+
+	public void setRight(Board right) {
+		this.right = right;
+	}
+
+	public Board getLeft() {
+		return left;
+	}
+
+	public void setLeft(Board left) {
+		this.left = left;
+	}
+
+	public Board getP() {
+		return p;
+	}
+
+	public void setP(Board p) {
+		this.p = p;
+	}
+
+	public char getPlayerWinner() {
+		return playerWinner;
+	}
+
+	public Player getPlayers() {
+		return players;
+	}
+
+	public void setPlayers(Player players) {
+		this.players = players;
+	}
+
+	public void setPlayerWinner(char playerWinner) {
+		this.playerWinner = playerWinner;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public String getNicknameWinner() {
+		return nicknameWinner;
+	}
+
+	public void setNicknameWinner(String nicknameWinner) {
+		this.nicknameWinner = nicknameWinner;
 	}
 }

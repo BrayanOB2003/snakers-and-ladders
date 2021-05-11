@@ -6,12 +6,13 @@ import java.io.InputStreamReader;
 
 import model.Game;
 
-public class Menu {
+public class Menu implements Runnable{
 	
-	Game newGame;
+	private Game newGame;
+	private Thread simulation;
 	
 	public void startProgram() throws IOException {
-		//6 6 3 3 &%#*
+
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("1. Iniciar juego\n" + "2. Tablero de posiciones\n" + "3. Salir");
 		int option = 0;
@@ -68,7 +69,7 @@ public class Menu {
 		if(in.equals("")) {
 			
 			System.out.println(newGame.throwDice());
-			System.out.println(newGame.printCurrentGame());
+			
 			if(newGame.thereWinner() != null) {
 				System.out.println(newGame.thereWinner());
 				line = "leave";
@@ -85,8 +86,8 @@ public class Menu {
 			currentGame(line);
 			
 		} else if(in.equals("simul")) {
-			
-			newGame.startSimulation();
+
+			startSimulation();
 			
 		} else if(in.equals("menu")) {
 			
@@ -105,5 +106,34 @@ public class Menu {
 		System.out.println("Digita el nickName del ganador: ");
 		String nick = br.readLine();
 		newGame.addPlayerWinner(nick);
+	}
+	
+	public void startSimulation() throws IOException {
+		simulation = new Thread(this);
+		simulation.start();
+	}
+	
+	@Override
+	public void run() {
+		
+		Thread current = Thread.currentThread();
+		if(current == simulation) {
+			if (newGame.thereWinner() == null) {
+				System.out.println(newGame.throwDice());
+				try {
+					Thread.sleep(2000);
+					run();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} 
+			} else {
+				
+				try {
+					startProgram();
+				} catch (IOException e) {
+
+				}
+			}
+		}
 	}
 }

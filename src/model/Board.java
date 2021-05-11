@@ -39,8 +39,15 @@ public class Board {
 		initialBoard = first.toString();
 	}
 	
-	public Board(int score, String nickname, Player players, char playerWinner, int n, int m, int s, int l) {
-		
+	public Board(int score, String nicknameWinner, Player players, char playerWinner, int n, int m, int s, int l) {
+		this.score = score;
+		this.nicknameWinner = nicknameWinner;
+		this.playerWinner = playerWinner;
+		this.numRows = n;
+		this.numColumns = m;
+		this.numSnakes = s;
+		this.numLadders = l;
+		this.players = players;
 	}
 	
 	//Search player

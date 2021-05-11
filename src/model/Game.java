@@ -1,12 +1,11 @@
 package model;
 
-public class Game implements Runnable{
+public class Game {
 	
 	private Board currentGame;
 	
 	private int numPlayers;
 	private int playerTurn;
-	private Thread simulation;
 	
 	private Board root;
 	
@@ -26,8 +25,8 @@ public class Game implements Runnable{
 	
 	public String throwDice() {
 		int dice = (int) (Math.random()*6 + 1);
-		String game = PlayerTurn(dice);
-	
+		String game = PlayerTurn(dice) + "\n\n" + printCurrentGame();
+		
 		if(currentGame.getPlayerWinner() != ' ') {
 			
 		}
@@ -85,7 +84,6 @@ public class Game implements Runnable{
 	private void addPlayerWinner(int amountMovements, String nickname, char playerWinner, Board board) {
 		
 		int score = amountMovements * (board.getNumColumns() * board.getNumRows());
-		board.setScore(score);
 		Board newPlayerWinner = new Board(score, nickname, board.getPlayers(), playerWinner, board.getNumRows(),
 				board.getNumColumns(), board.getNumSnakes(), board.getNumLadders());
 		
@@ -124,30 +122,11 @@ public class Game implements Runnable{
 		inOrden(root);
 	}
 	
-	public void inOrden(Board root) {
+	private void inOrden(Board root) {
 		if(root != null) {
 			inOrden(root.getLeft());
 			System.out.println(root.getNicknameWinner() + "  " + root.getScore());
 			inOrden(root.getRight());
-		}
-	}
-	
-	public void startSimulation() {
-		simulation = new Thread();
-		simulation.start();
-	}
-	
-	@Override
-	public void run() {
-		
-		Thread current = Thread.currentThread();
-		if(current == simulation) {
-			throwDice();
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 }

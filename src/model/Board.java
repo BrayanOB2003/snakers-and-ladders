@@ -6,22 +6,65 @@ public class Board {
 	private Box first;
 	private Player players;
 	
+	private String initialBoard;
 	private int numRows;
 	private int numColumns;
 	private int numSnakes;
 	private int numLadders;
+	private int score;
+	private char playerWinner;
+	private String nicknameWinner;
 	
+	private Board right;
+	private Board left;
+	private Board p;
+	
+	
+
 	public Board(int n, int m, int numSnakes, int numLadders, char[] players) {
 		numRows = n;
 		numColumns = m;
 		this.numSnakes = numSnakes;
 		this.numLadders = numLadders;
+		playerWinner = ' ';
 		makeBoard();
+		
 		char a = 65;
 		makeSnakes(a, numSnakes);
 		int i = 1;
 		makeLadders(numLadders, i);
+		
 		putPlayers(players);
+		
+		initialBoard = first.toString();
+	}
+	
+	public Board(int score, String nickname, Player players, char playerWinner, int n, int m, int s, int l) {
+		
+	}
+	
+	//Search player
+	
+	public Player searchPlayer(int i) {
+		return searchPlayer(players, i, 0);
+	}
+	
+	private Player searchPlayer(Player current, int i, int c) {
+		int cont = c;
+		if(current.getNext() != players) {
+			if(cont == i) {
+				return current;
+			} else {
+				cont++;
+				return searchPlayer(current.getNext(), i, cont);
+			}
+		} else {
+			if(cont == i) {
+				return current;
+			} else {
+				return null;
+			}
+		}
 	}
 	
 	//Put the players in initial position
@@ -50,7 +93,13 @@ public class Board {
 	
 	//Player movement
 	
-	public void playerMove(int move, char p) {
+	public String playerMove(int move, int player) {
+		playerMove(move, searchPlayer(player).getCharacter());
+		return "El jugador " + searchPlayer(player).getCharacter() + " ha lanzado el dado  y obtuvo el puntaje " + move;
+	}
+	
+	private void playerMove(int move, char p) {
+		addAmountMovement(p);
 		playerMove(numRows, first, p, move);
 	}
 	
@@ -90,12 +139,12 @@ public class Board {
 			moveToLeft(last.getUp(), last.getUp(), p, move);
 		}
 	}
-	
+		
 	private void moveRigth(Box current, char p, int move) {
 		
-		int i = move;
-			
-			if (i == 0 && !current.contain(p)) {
+	int i = move;
+	
+		if (i == 0 && !current.contain(p)) {
 				current.addPlayer(p);
 			} else if(current.contain(p)) {
 				
@@ -140,11 +189,10 @@ public class Board {
 				}
 
 			} else {
-				//moveToLeftWithouUp(current, i);
-			} 
+				moveToLeftWithouUp(current, p, move);
+			}
 			
 		} else {
-			System.out.println("2");
 			moveToRigth(last.getUp(), current, p, move);
 		}
 	}
@@ -155,6 +203,9 @@ public class Board {
 
 		if(i == 0 && !current.contain(p)) {
 			current.addPlayer(p);
+			if(current == first) {
+				playerWinner = p;
+			}
 		}else if(current.contain(p)) {
 			
 		} else {
@@ -166,7 +217,7 @@ public class Board {
 	private void currentAllToLeft(Box current, char p, int move) {
 		
 		int i = move;
-		
+		  
 		if(current.getPrev() == null) {
 			current.getUp().addPlayer(p);
 			i--;
@@ -177,22 +228,47 @@ public class Board {
 		}
 	}
 	
-	/*
-	private void moveToLeftWithouUp(Box current, int i) {
+	private void moveToLeftWithouUp(Box current, char p, int move) {
+		
+		
 		if(current.getPrev() != null) {
-			current.getPrev().setBoxNumber(i+1);
-			enumToLeftWithouUp(current.getPrev(), i+1);
+			
+			if (current.contain(p)) {
+				
+				int numCol = numColumns - (current.getCol() + 1);
+				
+				if ((numCol + move) < numColumns) {
+					current.removePlayer(p);
+					moveLeft(current, p, move);
+				}
+			} else {
+				moveToLeftWithouUp(current.getPrev(), p, move);
+			}		
 		}
 	}
 	
-
-	private void moveToRigthWitouUp(Box current, int i) {
+	/*
+	private void moveToRigthWitouUp(Box current, char p) {
 		if(current.getNext() != null) {
 			current.getNext().setBoxNumber(i+1);
 			enumToRigthWitouUp(current.getNext(), i+1);
 		}
 	}
 	*/
+	
+	private void addAmountMovement(char p) {
+		addAmountMovement(p, players);
+	}
+	
+	private void addAmountMovement(char p, Player current) {
+		if(current.getCharacter() == p) {
+			current.setAmountMovements();
+		}else {
+			addAmountMovement(p, current.getNext());
+		}
+	}
+
+	
 	//---------------------------------------Make Snakes---------------------------------------
 	
 	private void makeSnakes(char a, int numSnakes) {
@@ -524,7 +600,7 @@ public class Board {
 	}
 
 	//----------------------------------------Hacer Matriz-----------------------------------------------
-	public void makeBoard() {
+	private void makeBoard() {
 		first = new Box(0,0);
 		createRow(0,0, first);
 		searchInitialPosition(numRows, first, 1);
@@ -600,7 +676,7 @@ public class Board {
 		String msg = "";
 		if(firstRow != null) {
 			msg = toStringColGame(firstRow) + "\n";
-			msg += toStringRow(firstRow.getDown());
+			msg += toStringRowGame(firstRow.getDown());
 		}
 		return msg;
 	}
@@ -673,10 +749,13 @@ public class Board {
 		}
 	}
 	
+	
 	//-------------------------------------Getters and setters ----------------------------------------------
 	
 	
-
+	public String getInitialBoard() {
+		return initialBoard;
+	}
 
 	public int getNumColumns() {
 		return numColumns;
@@ -703,5 +782,61 @@ public class Board {
 
 	public int getNumLadders() {
 		return numLadders;
+	}
+	
+	public Board getRight() {
+		return right;
+	}
+
+	public void setRight(Board right) {
+		this.right = right;
+	}
+
+	public Board getLeft() {
+		return left;
+	}
+
+	public void setLeft(Board left) {
+		this.left = left;
+	}
+
+	public Board getP() {
+		return p;
+	}
+
+	public void setP(Board p) {
+		this.p = p;
+	}
+
+	public char getPlayerWinner() {
+		return playerWinner;
+	}
+
+	public Player getPlayers() {
+		return players;
+	}
+
+	public void setPlayers(Player players) {
+		this.players = players;
+	}
+
+	public void setPlayerWinner(char playerWinner) {
+		this.playerWinner = playerWinner;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public String getNicknameWinner() {
+		return nicknameWinner;
+	}
+
+	public void setNicknameWinner(String nicknameWinner) {
+		this.nicknameWinner = nicknameWinner;
 	}
 }

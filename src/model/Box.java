@@ -88,6 +88,24 @@ public class Box {
 		this.down = down;
 	}
 	
+	//Set index to players
+	
+	private void setIndex() {
+		setIndex(first, 0);
+	}
+	
+	private void setIndex(Player current, int i) {
+		if(first.getNext() == first) {
+			first.setIndex(0);
+		} else if(current.getNext() != first){
+			current.setIndex(i);
+			i++;
+			setIndex(current.getNext(), i++);
+		} else {
+			current.setIndex(i);
+		}
+	}
+	
 	//Circular linked list of player
 	public void addPlayer(char p) {
 		Player player = new Player(p);
@@ -103,6 +121,7 @@ public class Box {
 		if(current.getNext() == first) {
 			newPlayer.setNext(first);
 			current.setNext(newPlayer);
+			setIndex();
 		} else {
 			addPlayer(current.getNext(), newPlayer);
 		}

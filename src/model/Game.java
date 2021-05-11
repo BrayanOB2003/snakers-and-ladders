@@ -6,6 +6,8 @@ public class Game {
 	
 	private int numPlayers;
 	private int playerTurn;
+	private String info;
+	private int num;
 	
 	private Board root;
 	
@@ -13,6 +15,7 @@ public class Game {
 		currentGame = new Board(n, m, numSnakes, numLadders, players);
 		numPlayers = players.length;
 		playerTurn = 0;
+		info = "";
 	}
 	
 	public String printCurrentGame() {
@@ -111,19 +114,21 @@ public class Game {
 		}
 	}
 	
-	public void showInformation() {
-		inOrden(root);
-	}
-	
 	private void inOrden(Board root) {
 		if(root != null) {
 			inOrden(root.getLeft());
-			System.out.println(root.getNicknameWinner() + "  " + root.getScore());
+			num++;
+			info += num + ". " + root.getPlayerWinner() + " : " + root.getNicknameWinner() + " : " + root.getScore() + "\n";
 			inOrden(root.getRight());
 		}
 	}
 	
 	public Board getCurrentGame() {
 		return currentGame;
+	}
+	
+	public String getInfo() {
+		inOrden(root);
+		return info;
 	}
 }

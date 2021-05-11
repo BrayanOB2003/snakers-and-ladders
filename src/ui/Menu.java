@@ -40,8 +40,7 @@ public class Menu implements Runnable{
 			break;
 				
 			case 2:
-				savedGames.showInformation();
-				System.out.println();
+				System.out.println(savedGames.getInfo());
 				startProgram();
 				break;
 				
@@ -115,6 +114,7 @@ public class Menu implements Runnable{
 		String nick = br.readLine();
 		savedGames.addPlayerWinner(newGame.getCurrentGame(),nick);
 		startProgram();
+		br.close();
 	}
 	
 	public void startSimulation() throws IOException {
@@ -130,16 +130,17 @@ public class Menu implements Runnable{
 			if (newGame.thereWinner() == null) {
 				System.out.println(newGame.throwDice());
 				try {
-					Thread.sleep(0);
+					Thread.sleep(2000);
 					run();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				} 
+				}
 			} else {
 				try {
 					saveGame();
 				} catch (IOException e) {
-
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}

@@ -190,7 +190,6 @@ public class Board {
 					if ((numCol + move) < numColumns) {
 						moveLeft(current, p, move);
 					} else {
-						System.out.println(move - numCol);
 						currentAllToLeft(current, p, move);
 					}
 				} else {

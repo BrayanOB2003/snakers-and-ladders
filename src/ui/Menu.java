@@ -8,6 +8,8 @@ import model.Game;
 
 public class Menu implements Runnable{
 	
+	
+	private Game savedGames;
 	private Game newGame;
 	private Thread simulation;
 	
@@ -27,20 +29,24 @@ public class Menu implements Runnable{
 				
 				System.out.println("Digita la entrada del juego: ");
 				String[] gameIn = br.readLine().split(" ");
+			if (gameIn.length == 5) {
 				createGame(gameIn);
 				System.out.println(newGame.printBoard());
-				
 				String turn = br.readLine();
 				currentGame(turn);
-				
-				break;
+			} else {
+				startProgram();
+			}
+			break;
 				
 			case 2:
-				
+				savedGames.showInformation();
+				System.out.println();
+				startProgram();
 				break;
 				
 			case 3:
-				
+				System.out.println("Gracias por jugar.");
 				break;
 				
 			default:
@@ -59,6 +65,10 @@ public class Menu implements Runnable{
 		char[] players = gameIn[4].toCharArray();
 		
 		newGame = new Game(n, m, numSnake, numLadders, players);
+		
+		if(savedGames == null) {
+			savedGames = newGame;
+		}
 	}
 	
 	private void currentGame(String in) throws IOException {
@@ -71,7 +81,6 @@ public class Menu implements Runnable{
 			System.out.println(newGame.throwDice());
 			
 			if(newGame.thereWinner() != null) {
-				System.out.println(newGame.thereWinner());
 				line = "leave";
 				currentGame(line);
 			} else {
@@ -95,7 +104,6 @@ public class Menu implements Runnable{
 			
 		} else if(in.equals("leave")) {
 			saveGame();
-			startProgram();
 		}
 		
 		br.close();
@@ -105,7 +113,8 @@ public class Menu implements Runnable{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("Digita el nickName del ganador: ");
 		String nick = br.readLine();
-		newGame.addPlayerWinner(nick);
+		savedGames.addPlayerWinner(newGame.getCurrentGame(),nick);
+		startProgram();
 	}
 	
 	public void startSimulation() throws IOException {
@@ -121,15 +130,14 @@ public class Menu implements Runnable{
 			if (newGame.thereWinner() == null) {
 				System.out.println(newGame.throwDice());
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(0);
 					run();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} 
 			} else {
-				
 				try {
-					startProgram();
+					saveGame();
 				} catch (IOException e) {
 
 				}

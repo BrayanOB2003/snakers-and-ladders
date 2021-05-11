@@ -20,24 +20,21 @@ public class Game {
 	}
 	
 	public String printBoard() {
-		return currentGame.getInitialBoard();
+		return currentGame.toString();
 	}
 	
 	public String throwDice() {
 		int dice = (int) (Math.random()*6 + 1);
-		String game = PlayerTurn(dice) + "\n\n" + printCurrentGame();
+		String game = PlayerTurn(dice) + "\n\n" + printCurrentGame() + "\n";
+		String win = (thereWinner() != null)?thereWinner():"";
+		win = game + win;
 		
-		if(currentGame.getPlayerWinner() != ' ') {
-			
-		}
-		
-		return game;
+		return win;
 	}
 	
 	public String thereWinner() {
 		char p = currentGame.getPlayerWinner();
 		if(p != ' ') {
-			
 			return "El jugador " + p + " ha ganado el juego con " + currentGame.searchPlayer(p).getAmountMovements() + " movimientos.";
 		} else{
 			return null;
@@ -64,11 +61,7 @@ public class Game {
 		return currentGame.playerMove(move, i);
 	}
 	
-	public void addPlayerWinner(String nickName) {
-		addPlayerWinner(currentGame, nickName);
-	}
-	
-	private void addPlayerWinner(Board board, String nickname) {
+	public void addPlayerWinner(Board board, String nickname) {
 		addPlayerWinner(board.getPlayerWinner(), board.getPlayers(), nickname, board);
 	}
 	
@@ -128,5 +121,9 @@ public class Game {
 			System.out.println(root.getNicknameWinner() + "  " + root.getScore());
 			inOrden(root.getRight());
 		}
+	}
+	
+	public Board getCurrentGame() {
+		return currentGame;
 	}
 }

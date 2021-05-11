@@ -6,7 +6,6 @@ public class Board {
 	private Box first;
 	private Player players;
 	
-	private String initialBoard;
 	private int numRows;
 	private int numColumns;
 	private int numSnakes;
@@ -28,7 +27,6 @@ public class Board {
 		this.numLadders = numLadders;
 		playerWinner = ' ';
 		makeBoard();
-		
 		char a = 65;
 		makeSnakes(a, numSnakes);
 		int i = 1;
@@ -36,7 +34,6 @@ public class Board {
 		
 		putPlayers(players);
 		
-		initialBoard = first.toString();
 	}
 	
 	public Board(int score, String nicknameWinner, Player players, char playerWinner, int n, int m, int s, int l) {
@@ -98,11 +95,17 @@ public class Board {
 		}
 	}
 	
+	//Snakes and ladders
+	
+	public void searchSnake() {
+		
+	}
+	
 	//Player movement
 	
 	public String playerMove(int move, int player) {
 		playerMove(move, searchPlayer(player).getCharacter());
-		return "El jugador " + searchPlayer(player).getCharacter() + " ha lanzado el dado  y obtuvo el puntaje " + move;
+		return "El jugador " + searchPlayer(player).getCharacter() + " ha lanzado el dado y obtuvo el puntaje " + move;
 	}
 	
 	private void playerMove(int move, char p) {
@@ -117,7 +120,7 @@ public class Board {
 			playerMove(n, current.getDown(), p, move);
 		}
 	}
-
+	
 	private void moveToRigth(Box current, Box last, char p, int move) {
 		
 		if (current != null) {
@@ -139,10 +142,9 @@ public class Board {
 				}
 				
 			} else {
-				//moveToRigthWitouUp(current, i);
+				moveToRigthWitouUp(current, p, move);
 			}
 		} else {
-			System.out.println("1");
 			moveToLeft(last.getUp(), last.getUp(), p, move);
 		}
 	}
@@ -237,14 +239,13 @@ public class Board {
 	
 	private void moveToLeftWithouUp(Box current, char p, int move) {
 		
-		
 		if(current.getPrev() != null) {
 			
 			if (current.contain(p)) {
 				
 				int numCol = numColumns - (current.getCol() + 1);
 				
-				if ((numCol + move) < numColumns) {
+				if(move < (numColumns-numCol)) {
 					current.removePlayer(p);
 					moveLeft(current, p, move);
 				}
@@ -254,14 +255,22 @@ public class Board {
 		}
 	}
 	
-	/*
-	private void moveToRigthWitouUp(Box current, char p) {
+	
+	private void moveToRigthWitouUp(Box current, char p, int move) {
+
 		if(current.getNext() != null) {
-			current.getNext().setBoxNumber(i+1);
-			enumToRigthWitouUp(current.getNext(), i+1);
+			
+			if (current.contain(p)) {
+								
+				if(move < numColumns-current.getCol()) {
+					current.removePlayer(p);
+					moveRigth(current, p, move);
+				}
+			} else {
+				moveToRigthWitouUp(current.getPrev(), p, move);
+			}
 		}
 	}
-	*/
 	
 	private void addAmountMovement(char p) {
 		addAmountMovement(p, players);
@@ -759,11 +768,6 @@ public class Board {
 	
 	//-------------------------------------Getters and setters ----------------------------------------------
 	
-	
-	public String getInitialBoard() {
-		return initialBoard;
-	}
-
 	public int getNumColumns() {
 		return numColumns;
 	}
